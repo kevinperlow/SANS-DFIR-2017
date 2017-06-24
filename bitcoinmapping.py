@@ -14,7 +14,7 @@ usedaddresslist = [seed_address]
 
 for transaction in firstjson["txs"]:
     
-    print("\n{}".format(transaction["hash"]))
+    #print("\n{}".format(transaction["hash"]))
 
     payerlist = [item['prev_out']['addr'] for item in transaction['inputs']]
     recipientlist = [target['addr'] for target in transaction['out']]
