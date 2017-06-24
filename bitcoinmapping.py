@@ -4,7 +4,7 @@ import sys
 
 import graphviz as gv
 
-G = gv.Digraph(format='png')
+G = gv.Digraph(format='svg')
 
 seed_address = sys.argv[1]
 initialreq = "https://blockchain.info/rawaddr/{}".format(seed_address)

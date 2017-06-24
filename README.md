@@ -1,2 +1,8 @@
-# SANS-DFIR-2017
-The Python file in this repo is for querying the blockchain.info API to generate a graphviz formatted output for bitcoin address relationships. 
+# bitcoinmapping
+Write a graphviz dot file and accompanying SVG file for a Bitcoin address transaction graph.
+
+Usage:
+
+`python bitcoinmapping.py <address>`
+
+Produces a dot file and SVG file in the same directory.
