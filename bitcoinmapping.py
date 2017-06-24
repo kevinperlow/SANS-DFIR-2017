@@ -1,51 +1,27 @@
-import json
 import requests
+import sys
 
-z = 0
-i = 0
-firstpart = "https://blockchain.info/rawaddr/"
-initialinput = input("please type the 'seed' address: ")
-initialreq = firstpart + initialinput
+import graphviz as gv
+
+G = gv.Digraph(format='svg')
+
+seed_address = sys.argv[1]
+initialreq = "https://blockchain.info/rawaddr/{}".format(seed_address)
 
 firstjson = (requests.get(initialreq)).json()
-graphvizlines = []
 
-addresslist = []
-usedaddresslist = []
+addresslist = set([seed_address])
+usedaddresslist = [seed_address]
 
-addresslist.append(initialinput)
-usedaddresslist.append(initialinput)
-
-while i < 6:
-    if z is 1:
-        initialreq = firstpart + addresslist[i]
-        firstjson = (requests.get(initialreq)).json()
+for transaction in firstjson["txs"]:
     
-    for transaction in firstjson["txs"]:
-        payerlist = []
-        recipientlist = []
-        
-        print("\n" + transaction["hash"])
+    payerlist = [item['prev_out']['addr'] for item in transaction['inputs']]
+    recipientlist = [target['addr'] for target in transaction['out']]
 
-        for item in transaction["inputs"]:
-            payerlist.append(item["prev_out"]["addr"])
-            if item["prev_out"]["addr"] not in addresslist:
-                addresslist.append(item["prev_out"]["addr"])
+    for payer in payerlist:
+        for recipient in recipientlist:
+            G.node(payer)
+            G.node(recipient)
+            G.edge(payer,recipient)
 
-        for target in transaction["out"]:
-            recipientlist.append(target["addr"])
-            if target["addr"] not in addresslist:
-                addresslist.append(target["addr"])
-
-        for payer in payerlist:
-            for recipient in recipientlist:
-                a = '"' + payer + '"' + " -> " + '"' + recipient + '"' + ";"
-                if a not in graphvizlines:
-                    graphvizlines.append(a)
-    i = i + 1    
-    z = 1
-        
-
-for t in graphvizlines:
-    print(t)
-
+G.render('{}'.format(seed_address))
