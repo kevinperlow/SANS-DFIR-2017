@@ -1,24 +1,20 @@
 import json
 import requests
+import sys
 
 z = 0
 i = 0
-firstpart = "https://blockchain.info/rawaddr/"
-initialinput = input("please type the 'seed' address: ")
-initialreq = firstpart + initialinput
+seed_address = sys.argv[1]
+initialreq = "https://blockchain.info/rawaddr/{}".format(seed_address)
 
 firstjson = (requests.get(initialreq)).json()
 graphvizlines = []
 
-addresslist = []
-usedaddresslist = []
-
-addresslist.append(initialinput)
-usedaddresslist.append(initialinput)
+addresslist = [seed_address]
+usedaddresslist = [seed_address]
 
 while i < 6:
     if z is 1:
-        initialreq = firstpart + addresslist[i]
         firstjson = (requests.get(initialreq)).json()
     
     for transaction in firstjson["txs"]:
@@ -39,7 +35,8 @@ while i < 6:
 
         for payer in payerlist:
             for recipient in recipientlist:
-                a = '"' + payer + '"' + " -> " + '"' + recipient + '"' + ";"
+                a = '"{}" -> "{};"'.format(payer,recipient)
+                #a = '"' + payer + '"' + " -> " + '"' + recipient + '"' + ";"
                 if a not in graphvizlines:
                     graphvizlines.append(a)
     i = i + 1    
