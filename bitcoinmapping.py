@@ -2,12 +2,15 @@ import json
 import requests
 import sys
 
-z = 0
+import graphviz as gv
+
+G = gv.Digraph(format='png')
+
 seed_address = sys.argv[1]
 initialreq = "https://blockchain.info/rawaddr/{}".format(seed_address)
 
 firstjson = (requests.get(initialreq)).json()
-graphvizlines = set()
+#graphvizlines = set()
 
 addresslist = set([seed_address])
 usedaddresslist = [seed_address]
@@ -21,8 +24,9 @@ for transaction in firstjson["txs"]:
 
     for payer in payerlist:
         for recipient in recipientlist:
-            graphvizlines.add('"{}" -> "{};"'.format(payer,recipient))
+            #graphvizlines.add('"{}" -> "{}";'.format(payer,recipient))
+            G.node(payer)
+            G.node(recipient)
+            G.edge(payer,recipient)
 
-for t in graphvizlines:
-    print(t)
-
+G.render('{}'.format(seed_address))
